@@ -2,7 +2,7 @@ import numpy as np
 import math
 import os
 import numpy as np
-import job_distribution
+
 from basic import RCPSP_fileparser as fp
 import random
 class Parameters:

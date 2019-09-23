@@ -275,9 +275,9 @@ def launch(pa, pg_resume=None, render=False, repre='image', end='no_new_job'):
         print "Loss:     \t %s" % loss
         print "MaxRew: \t %s" % np.average([np.max(rew) for rew in all_eprews])
         print "MeanRew: \t %s +- %s" % (eprews.mean(), eprews.std())
-        print "MeanSlowdown: \t %s" % np.mean(all_slowdown)
+        # print "MeanSlowdown: \t %s" % np.mean(all_slowdown)
         print "MeanLen: \t %s +- %s" % (eplens.mean(), eplens.std())
-        print "MeanEntropy \t %s" % (np.mean(all_entropy))
+        # print "MeanEntropy \t %s" % (np.mean(all_entropy))
         print "Elapsed time\t %s" % (timer_end - timer_start), "seconds"
         if iteration % 10 == 0:
             testing.start()
@@ -294,16 +294,16 @@ def launch(pa, pg_resume=None, render=False, repre='image', end='no_new_job'):
             cPickle.dump(pg_learner.get_params(), param_file, -1)
             param_file.close()
 
-            slow_down_cdf.launch(pa, pa.output_filename + '_' + str(iteration) + '.pkl',
-                                 render=False, plot=True, repre=repre, end=end)
-
-            plot_lr_curve(pa.output_filename,
-                          max_rew_lr_curve, mean_rew_lr_curve, slow_down_lr_curve,
-                          ref_discount_rews, ref_slow_down)
+            # slow_down_cdf.launch(pa, pa.output_filename + '_' + str(iteration) + '.pkl',
+            #                      render=False, plot=True, repre=repre, end=end)
+            #
+            # plot_lr_curve(pa.output_filename,
+            #               max_rew_lr_curve, mean_rew_lr_curve, slow_down_lr_curve,
+            #               ref_discount_rews, ref_slow_down)
 
 
 def main():
-
+    import sys
     import parameters_RCPSP
 
 
@@ -319,7 +319,7 @@ def main():
     pa.num_seq_per_batch = 20
     pa.output_freq = 50
     # pa.num_queue = 7
-    pa.output_filename = 'data/preced30_5_hsize20_hori150'
+
     # pa.max_nw_size = 5
     # pa.job_len = 5
     pa.new_job_rate = 0.3
@@ -333,7 +333,7 @@ def main():
     # pg_resume = 'data/preced30_5_hsize20_350.pkl'
     pg_resume = None
     render = False
-
+    pa.output_filename = 'data/result/onebestitem/qs5_hsize20'
     launch(pa, pg_resume, render, repre='compact', end='all_done')
 
 

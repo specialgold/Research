@@ -1,0 +1,8 @@
+backlog to queue
+	1. pop 1 item when call findEligible function
+	2. add more information in state
+		2.1 whole size(duration * # res) 
+		2.2 next duration and # res
+	3. call random
+	4. compare random and total duration
+	5. compare min and max duration

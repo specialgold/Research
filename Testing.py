@@ -3,7 +3,7 @@
 import pg_network
 import cPickle
 import numpy as np
-
+import time
 
 class TestingTrainParameter:
     def __init__(self, pa, env, learner=None, pg_resume=None):
@@ -40,6 +40,8 @@ class TestingTrainParameter:
         finish = self.env.reset()
         # print(finish)
         rews = []
+        times = []
+        timer_start = time.time()
         while finish:
             # print("2")
 
@@ -52,6 +54,7 @@ class TestingTrainParameter:
 
                 if done:
                     rews.append(rew)
+                    times.append(self.env.done_reward)
                     # if len(rews)%10==0:
                     #     for index in range(len(info.record)):
                     #         print("no: " + str(info.record[index].no) + ", start: " + str(
@@ -62,10 +65,22 @@ class TestingTrainParameter:
                     break
 
             finish = self.env.reset()
-        # print "Testing Mean\t %s" % np.mean(rews)
-        print "%s\t%s\t%s\t%s" % (np.mean(rews), np.max(rews), np.min(rews), np.std(rews))
-        print rews
-        # list = np.bincount(rews)
+        timer_end = time.time()
+        list = np.bincount(times)
+        # print list
+        print "Elapsed time\t %s" % str((timer_end - timer_start)/np.sum(list)), "seconds"
+        print "T-Reward Mean\t %s" % np.mean(rews)
+        print "T-endtime Mean\t %s" % np.mean(times)
+
+        # print "%s\t%s\t%s\t%s" % (np.mean(rews), np.max(rews), np.min(rews), np.std(rews))
+        # print rews
+
+
+        print "T-Opt\t\t %s" % str(float(np.sum(list[:1])) / float(np.sum(list)))
+        print "T-1ap\t\t %s" % str(float(np.sum(list[:2])) / float(np.sum(list)))
+        print "T-2ap\t\t %s" % str(float(np.sum(list[:3])) / float(np.sum(list)))
+        print "T-3ap\t\t %s" % str(float(np.sum(list[:4])) / float(np.sum(list)))
+        print "T-7ap\t\t %s" % str(float(np.sum(list[:8])) / float(np.sum(list)))
         # print float(np.sum(list[:8]))/float(np.sum(list))
 
 if __name__ == '__main__':
@@ -76,13 +91,13 @@ if __name__ == '__main__':
     env = environment.Env(pa)
 
     ###################################
-    print "iter\tmean\tmax\tmin\tstd"
-    ttp = TestingTrainParameter(pa, env)
-    for i in range(300, 5000, 50):
-        print str(i) + '\t',
-        ttp.reset(pa, env, learner=None, pg_resume='data/preced30_5_hsize20_hori150_' + str(i) + '.pkl')
-        ttp.start()
+    # print "iter\tmean\tmax\tmin\tstd"
+    # ttp = TestingTrainParameter(pa, env)
+    # for i in range(300, 5000, 50):
+    #     print str(i) + '\t',
+    #     ttp.reset(pa, env, learner=None, pg_resume='data/preced30_5_hsize20_hori150_' + str(i) + '.pkl')
+    #     ttp.start()
     ###################################
 
-    # ttp = TestingTrainParameter(pa, env, learner=None, pg_resume='data/preced30_5_hsize20_hori150_4100.pkl')
-    # ttp.start()
+    ttp = TestingTrainParameter(pa, env, learner=None, pg_resume='data/result/oneitemqueue/onequeue_qs5_hsize20_450.pkl')
+    ttp.start()

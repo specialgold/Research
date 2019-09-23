@@ -16,6 +16,7 @@ class Env:
         self.backlog = self.activities[1:-1]
         # print(self.backlog)
         self.stage = 0
+        self.done_reward=0
 
         # self.dueDate = pa.dueDate
         # self.releaseDate = pa.releaseDate
@@ -47,7 +48,7 @@ class Env:
         self.backlog_cnt = self.pa.act_job
         self.curr_time = 0
         self.allocated = []
-
+        self.done_reward = 0
         self.act_seq = []
         self.renew = RenewableResources(self.pa)
         self.nonrenew = NonRenewableResources(self.pa)
@@ -61,7 +62,15 @@ class Env:
         self.findEligible()
         return True
 
-    def findEligible(self):
+    def findEligible(self, type='Max'):
+        if type == 'Max':
+            self.findMaxEligible()
+        elif type == 'Min':
+            pass
+        elif type == 'Random':
+            pass
+
+    def findMaxEligible(self):
         for j in range(self.pa.num_queue):
             if self.eligible[j] is None:
                 tmp = None
@@ -76,11 +85,7 @@ class Env:
                     self.eligible[j] = tmp
                     self.eligible_cnt += 1
                     self.backlog.remove(tmp)
-
-
-
-
-
+                    break
 
 
     def getActivities(self, pa, job_record):
@@ -236,12 +241,14 @@ class Env:
 
                     # reward = 50 - endtime
                     # reward = self.pa.delay_penalty * endtime
-                    # reward = float(endtime-1) / float(self.pa.dueDate) * self.pa.delay_penalty
-                    reward = float(self.pa.opt[self.pa.file]) / float(endtime-1)
+                    reward = float(endtime-1) / float(self.pa.dueDate) * self.pa.delay_penalty
+                    # reward = float(self.pa.opt[self.pa.file]) / float(endtime-1)
                     # print self.pa.file + ', opt: ' + str(self.pa.opt[self.pa.file]) + ', endtime:'+ str(endtime-1)
 
                     # reward = float(endtime-1) / float(self.pa.opt[self.pa.file])
-                    # reward = endtime - self.pa.opt[self.pa.file] - 1
+                    # reward = (endtime - self.pa.opt[self.pa.file] - 1) * self.pa.delay_penalty
+                    self.done_reward = endtime - self.pa.opt[self.pa.file] - 1
+                    # print(self.done_reward)
 
         if Allocated is False:
             # print("????")
@@ -262,7 +269,10 @@ class Env:
 
         if self.stage == self.pa.episode_max_length - 1:
             # reward = self.pa.episode_max_length - self.pa.opt[self.pa.file] - 1
-            reward = float(self.pa.opt[self.pa.file]) / float(self.pa.episode_max_length - 1)
+            # reward = float(self.pa.opt[self.pa.file]) / float(self.pa.episode_max_length - 1)
+            reward = float(self.pa.episode_max_length - 1) / float(self.pa.opt[self.pa.file]) * self.pa.delay_penalty
+
+            self.done_reward = self.pa.episode_max_length - self.pa.opt[self.pa.file] - 1
             done = True
             # reward = -100
 
