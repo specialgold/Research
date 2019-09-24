@@ -20,8 +20,13 @@ class TestingTrainParameter:
         self.env = env
         self.pa = pa
         self.isTest = False
+        self.fp = None
+
     def setTest(self, flag):
         self.isTest = flag
+
+    def setFP(self, fp):
+        self.fp = fp
 
     def reset(self, pa, env, learner=None, pg_resume=None):
         if learner is None:
@@ -72,10 +77,20 @@ class TestingTrainParameter:
         list = np.bincount(times)
 
         if self.isTest:
-            print "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t" % (np.mean(rews), np.max(rews), np.min(rews), str(float(np.sum(list[:1])) / float(np.sum(list))),
+            data = "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (np.mean(rews), np.max(rews), np.min(rews), str(float(np.sum(list[:1])) / float(np.sum(list))),
                                 str(float(np.sum(list[:2])) / float(np.sum(list))), str(float(np.sum(list[:3])) / float(np.sum(list))),
                                 str(float(np.sum(list[:4])) / float(np.sum(list))), str(float(np.sum(list[:8])) / float(np.sum(list))),
                                 np.mean(times), np.std(times), np.max(times), np.min(times))
+
+            if self.fp is not None:
+                self.fp.write(data)
+            print data
+
+            # print "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t" % (np.mean(rews), np.max(rews), np.min(rews), str(float(np.sum(list[:1])) / float(np.sum(list))),
+            #                     str(float(np.sum(list[:2])) / float(np.sum(list))), str(float(np.sum(list[:3])) / float(np.sum(list))),
+            #                     str(float(np.sum(list[:4])) / float(np.sum(list))), str(float(np.sum(list[:8])) / float(np.sum(list))),
+            #                     np.mean(times), np.std(times), np.max(times), np.min(times))
+
         else:
             print "Elapsed time\t %s" % str((timer_end - timer_start) / np.sum(list)), "seconds"
             print "T-Reward Mean\t %s" % np.mean(rews)
@@ -106,18 +121,21 @@ if __name__ == '__main__':
         s_type = 'Max'
     pa = parameters_RCPSP.Parameters()
     pa.s_type = s_type
-
+    fp = open(file+'result_'+s_type+'.txt', 'w')
     env = environment.Env(pa)
 
     ###################################
     print "iter\tr-mean\tr-max\tr-min\topt\t1ap\t2ap\t3ap\t7ap\td-mean\td-std\td-max\td-min"
+    fp.write("iter\tr-mean\tr-max\tr-min\topt\t1ap\t2ap\t3ap\t7ap\td-mean\td-std\td-max\td-min\n")
     ttp = TestingTrainParameter(pa, env)
     ttp.setTest(True)
-    for i in range(2000, 9400, 50):
+    ttp.setFP(fp)
+    for i in range(0, 3001, 50):
         print str(i) + '\t',
+        fp.write(str(i) + '\t')
         ttp.reset(pa, env, learner=None, pg_resume=file + 'qs5_hsize20_' + str(i) + '.pkl')
         ttp.start()
     ###################################
-
+    fp.close()
     # ttp = TestingTrainParameter(pa, env, learner=None, pg_resume='data/result/onebestitem/qs5_hsize20_2100.pkl')
     # ttp.start()
