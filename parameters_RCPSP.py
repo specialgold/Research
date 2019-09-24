@@ -19,6 +19,7 @@ class Parameters:
         a = np.random.choice(self.train, 1)
         self.file = a[0]
         self.path = self.path + self.file
+        self.s_type = 'Max'
 
         info = fp.parser(self.path)
         # print(a[0])
@@ -54,7 +55,7 @@ class Parameters:
 
         self.output_filename = 'data/tmp'
 
-        self.num_epochs = 10000         # number of training epochs
+        self.num_epochs = 5001         # number of training epochs
         self.simu_len = 10             # length of the busy cycle that repeats itself
         self.num_ex = 1                # number of sequences
 

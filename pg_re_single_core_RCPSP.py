@@ -306,9 +306,12 @@ def main():
     import sys
     import parameters_RCPSP
 
-
-
-
+    if len(sys.argv) > 2:
+        filename = sys.argv[1]+'qs5_hsize20'
+        s_type = sys.argv[2]
+    else:
+        filename = 'data/result/oneRandomItem/qs5_hsize20'
+        s_type = 'Max'
     # info = fp.parser('data/raw/j102_4.mm.backup')
     pa = parameters_RCPSP.Parameters()
 
@@ -331,9 +334,12 @@ def main():
     # pg_resume = 'data/preced_4550.pkl'
     # pg_resume = 'data/tmp_0.pkl'
     # pg_resume = 'data/preced30_5_hsize20_350.pkl'
+
     pg_resume = None
     render = False
-    pa.output_filename = 'data/result/onebestitem/qs5_hsize20'
+    pa.output_filename = filename
+    pa.s_type = s_type
+    print pa.s_type
     launch(pa, pg_resume, render, repre='compact', end='all_done')
 
 

@@ -33,7 +33,8 @@ class Env:
         self.backlog_cnt = self.pa.act_job
 
         self.act_seq = []
-        self.findEligible()
+        self.s_type = pa.s_type
+        self.findEligible(s_type=self.s_type)
         # print(self.backlog)
         # print(self.eligible)
 
@@ -59,16 +60,36 @@ class Env:
         self.backlog = self.activities[1:-1]
         # self.dueDate = pa.dueDate
         # self.releaseDate = pa.releaseDate
-        self.findEligible()
+        self.findEligible(s_type=self.s_type)
         return True
 
-    def findEligible(self, type='Max'):
-        if type == 'Max':
+    def findEligible(self, s_type='Max'):
+        if s_type == 'Max':
             self.findMaxEligible()
-        elif type == 'Min':
-            pass
-        elif type == 'Random':
-            pass
+        elif s_type == 'Min':
+            self.findMinEligible()
+        elif s_type == 'Random':
+            self.findRandomEligible()
+        else:
+            print("wrong s_type")
+
+    def findMinEligible(self):
+        for j in range(self.pa.num_queue):
+            if self.eligible[j] is None:
+                tmp = None
+                min = 1000
+                for act in self.backlog:
+                    if np.sum(act.rep_precedence) == 0:
+                        if act.after_duration < min:
+                            # print(tmp)
+                            tmp = act
+                            min = act.after_duration
+                if tmp is not None:
+                    self.eligible[j] = tmp
+                    self.eligible_cnt += 1
+                    self.backlog.remove(tmp)
+                    break
+
 
     def findMaxEligible(self):
         for j in range(self.pa.num_queue):
@@ -76,7 +97,7 @@ class Env:
                 tmp = None
                 max = 0
                 for act in self.backlog:
-                    if (np.sum(act.rep_precedence) == 0):
+                    if np.sum(act.rep_precedence) == 0:
                         if act.after_duration > max:
                             # print(tmp)
                             tmp = act
@@ -87,6 +108,21 @@ class Env:
                     self.backlog.remove(tmp)
                     break
 
+    def findRandomEligible(self):
+        for j in range(self.pa.num_queue):
+            if self.eligible[j] is None:
+
+                list = []
+                for act in self.backlog:
+                    if np.sum(act.rep_precedence) == 0:
+                        list.append(act)
+
+                if len(list) != 0:
+                    tmp = np.random.choice(list, 1)
+                    self.eligible[j] = tmp[0]
+                    self.eligible_cnt += 1
+                    self.backlog.remove(tmp[0])
+                    break
 
     def getActivities(self, pa, job_record):
         activities = []
@@ -241,8 +277,8 @@ class Env:
 
                     # reward = 50 - endtime
                     # reward = self.pa.delay_penalty * endtime
-                    reward = float(endtime-1) / float(self.pa.dueDate) * self.pa.delay_penalty
-                    # reward = float(self.pa.opt[self.pa.file]) / float(endtime-1)
+                    # reward = float(endtime-1) / float(self.pa.dueDate) * self.pa.delay_penalty
+                    reward = float(self.pa.opt[self.pa.file]) / float(endtime-1)
                     # print self.pa.file + ', opt: ' + str(self.pa.opt[self.pa.file]) + ', endtime:'+ str(endtime-1)
 
                     # reward = float(endtime-1) / float(self.pa.opt[self.pa.file])
@@ -257,7 +293,7 @@ class Env:
 
             # reward = self.get_reward()
 
-        self.findEligible()
+        self.findEligible(s_type=self.s_type)
 
         # for i in range(self.pa.act_job):
         #     print(str(self.activities[i+1].no)+': ', end='')

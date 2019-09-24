@@ -42,7 +42,15 @@
 # else:
 #     print('Used the gpu')
 
-list = [1,2]
-print(list.pop())
-print(list.pop())
-print(len(list))
+# list = [1,2]
+# print(list.pop())
+# print(list.pop())
+# print(len(list))
+
+import sys
+print(len(sys.argv))
+print(str(sys.argv))
+print(sys.argv[0])
+print(sys.argv[1])
+print(sys.argv[2])
+print(sys.argv[3])

@@ -1,8 +1,8 @@
 backlog to queue
-	1. pop 1 item when call findEligible function
+	1. pop 1 item when call findEligible function - complete(also experiment)
 	2. add more information in state
 		2.1 whole size(duration * # res) 
 		2.2 next duration and # res
-	3. call random
-	4. compare random and total duration
-	5. compare min and max duration
+		2.3 backlog precedence boolean or act can be in backlog without precedence
+	3. call random - complete (experiment ing)
+	4. compare random and max duration and min

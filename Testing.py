@@ -19,6 +19,9 @@ class TestingTrainParameter:
         # print("??")
         self.env = env
         self.pa = pa
+        self.isTest = False
+    def setTest(self, flag):
+        self.isTest = flag
 
     def reset(self, pa, env, learner=None, pg_resume=None):
         if learner is None:
@@ -67,37 +70,54 @@ class TestingTrainParameter:
             finish = self.env.reset()
         timer_end = time.time()
         list = np.bincount(times)
-        # print list
-        print "Elapsed time\t %s" % str((timer_end - timer_start)/np.sum(list)), "seconds"
-        print "T-Reward Mean\t %s" % np.mean(rews)
-        print "T-endtime Mean\t %s" % np.mean(times)
 
-        # print "%s\t%s\t%s\t%s" % (np.mean(rews), np.max(rews), np.min(rews), np.std(rews))
-        # print rews
+        if self.isTest:
+            print "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t" % (np.mean(rews), np.max(rews), np.min(rews), str(float(np.sum(list[:1])) / float(np.sum(list))),
+                                str(float(np.sum(list[:2])) / float(np.sum(list))), str(float(np.sum(list[:3])) / float(np.sum(list))),
+                                str(float(np.sum(list[:4])) / float(np.sum(list))), str(float(np.sum(list[:8])) / float(np.sum(list))),
+                                np.mean(times), np.std(times), np.max(times), np.min(times))
+        else:
+            print "Elapsed time\t %s" % str((timer_end - timer_start) / np.sum(list)), "seconds"
+            print "T-Reward Mean\t %s" % np.mean(rews)
+            print "T-endtime Mean\t %s" % np.mean(times)
+
+            # print rews
+
+            print "T-Opt\t\t %s" % str(float(np.sum(list[:1])) / float(np.sum(list)))
+            print "T-1ap\t\t %s" % str(float(np.sum(list[:2])) / float(np.sum(list)))
+            print "T-2ap\t\t %s" % str(float(np.sum(list[:3])) / float(np.sum(list)))
+            print "T-3ap\t\t %s" % str(float(np.sum(list[:4])) / float(np.sum(list)))
+            print "T-7ap\t\t %s" % str(float(np.sum(list[:8])) / float(np.sum(list)))
 
 
-        print "T-Opt\t\t %s" % str(float(np.sum(list[:1])) / float(np.sum(list)))
-        print "T-1ap\t\t %s" % str(float(np.sum(list[:2])) / float(np.sum(list)))
-        print "T-2ap\t\t %s" % str(float(np.sum(list[:3])) / float(np.sum(list)))
-        print "T-3ap\t\t %s" % str(float(np.sum(list[:4])) / float(np.sum(list)))
-        print "T-7ap\t\t %s" % str(float(np.sum(list[:8])) / float(np.sum(list)))
+
         # print float(np.sum(list[:8]))/float(np.sum(list))
 
 if __name__ == '__main__':
+    import sys
     import parameters_RCPSP
     from basic import basic_RCPSP_env as environment
     # info = fp.parser('data/raw/j102_4.mm.backup')
+    if len(sys.argv) > 2:
+        file = sys.argv[1]
+        s_type = sys.argv[2]
+    else:
+        file = 'data/result/onebestitem/'
+        s_type = 'Max'
     pa = parameters_RCPSP.Parameters()
+    pa.s_type = s_type
+
     env = environment.Env(pa)
 
     ###################################
-    # print "iter\tmean\tmax\tmin\tstd"
-    # ttp = TestingTrainParameter(pa, env)
-    # for i in range(300, 5000, 50):
-    #     print str(i) + '\t',
-    #     ttp.reset(pa, env, learner=None, pg_resume='data/preced30_5_hsize20_hori150_' + str(i) + '.pkl')
-    #     ttp.start()
+    print "iter\tr-mean\tr-max\tr-min\topt\t1ap\t2ap\t3ap\t7ap\td-mean\td-std\td-max\td-min"
+    ttp = TestingTrainParameter(pa, env)
+    ttp.setTest(True)
+    for i in range(2000, 9400, 50):
+        print str(i) + '\t',
+        ttp.reset(pa, env, learner=None, pg_resume=file + 'qs5_hsize20_' + str(i) + '.pkl')
+        ttp.start()
     ###################################
 
-    ttp = TestingTrainParameter(pa, env, learner=None, pg_resume='data/result/oneitemqueue/onequeue_qs5_hsize20_450.pkl')
-    ttp.start()
+    # ttp = TestingTrainParameter(pa, env, learner=None, pg_resume='data/result/onebestitem/qs5_hsize20_2100.pkl')
+    # ttp.start()
