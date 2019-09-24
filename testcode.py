@@ -47,10 +47,33 @@
 # print(list.pop())
 # print(len(list))
 
-import sys
-print(len(sys.argv))
-print(str(sys.argv))
-print(sys.argv[0])
-print(sys.argv[1])
-print(sys.argv[2])
-print(sys.argv[3])
+# import sys
+# print(len(sys.argv))
+# print(str(sys.argv))
+# print(sys.argv[0])
+# print(sys.argv[1])
+# print(sys.argv[2])
+# print(sys.argv[3])
+# import os
+# import random
+# path = 'data/30/'
+# seq = 0
+#
+# dirList = os.listdir(path)
+# random.shuffle(dirList)
+# random.shuffle(dirList)
+# random.shuffle(dirList)
+# total = len(dirList)
+# train = dirList[:int(total*0.8)]
+# train_len = len(train)
+# test = dirList[int(total*0.8):]
+# fp = open('data/opt30/trainlist.txt', 'w')
+# for file in train:
+#     fp.write(file+'\n')
+#
+# fp.close()
+# fp = open('data/opt30/testlist.txt', 'w')
+# for file in test:
+#     fp.write(file+'\n')
+#
+# fp.close()

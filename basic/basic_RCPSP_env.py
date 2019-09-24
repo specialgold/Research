@@ -106,7 +106,7 @@ class Env:
                     self.eligible[j] = tmp
                     self.eligible_cnt += 1
                     self.backlog.remove(tmp)
-                    break
+                    # break
 
     def findRandomEligible(self):
         for j in range(self.pa.num_queue):
@@ -305,8 +305,8 @@ class Env:
 
         if self.stage == self.pa.episode_max_length - 1:
             # reward = self.pa.episode_max_length - self.pa.opt[self.pa.file] - 1
-            # reward = float(self.pa.opt[self.pa.file]) / float(self.pa.episode_max_length - 1)
-            reward = float(self.pa.episode_max_length - 1) / float(self.pa.opt[self.pa.file]) * self.pa.delay_penalty
+            reward = float(self.pa.opt[self.pa.file]) / float(self.pa.episode_max_length - 1)
+            # reward = float(self.pa.episode_max_length - 1) / float(self.pa.opt[self.pa.file]) * self.pa.delay_penalty
 
             self.done_reward = self.pa.episode_max_length - self.pa.opt[self.pa.file] - 1
             done = True

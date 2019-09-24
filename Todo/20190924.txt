@@ -1,7 +1,8 @@
 --experiment--
 network test
-	1. unit
+	1. unit(ing)
 	2. layer
 
 --implement--
 continue iteration in resume
+train-test data seperate

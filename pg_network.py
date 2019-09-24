@@ -79,7 +79,7 @@ class PGLearner:
 
         # compact representation
         self.l_out = \
-            build_compact_network(pa.network_compact_dim, pa.network_output_dim)
+            build_compact_network(pa.network_compact_dim, pa.network_output_dim, pa.n_unit)
 
         self.lr_rate = pa.lr_rate
         self.rms_rho = pa.rms_rho
@@ -304,7 +304,7 @@ def build_pg_network(input_height, input_width, output_length):
     return l_out
 
 
-def build_compact_network(input_length, output_length):
+def build_compact_network(input_length, output_length, unit):
 
     l_in = lasagne.layers.InputLayer(
         shape=(None, 1, input_length),
@@ -312,7 +312,7 @@ def build_compact_network(input_length, output_length):
 
     l_hid = lasagne.layers.DenseLayer(
         l_in,
-        num_units=20,
+        num_units=unit,
         # nonlinearity=lasagne.nonlinearities.tanh,
         nonlinearity=lasagne.nonlinearities.rectify,
         # W=lasagne.init.Normal(.0201),

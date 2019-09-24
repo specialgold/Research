@@ -30,7 +30,12 @@ def opt_parser(path):
         opt[key] = res[2]
     return opt
 
-
+def get_list(path):
+    f = open(path, 'r')
+    list = []
+    for file in f:
+        list.append(file.strip())
+    return list
 # print(opt_parser('j30opt.sm'))
 
 

@@ -114,13 +114,17 @@ if __name__ == '__main__':
     from basic import basic_RCPSP_env as environment
     # info = fp.parser('data/raw/j102_4.mm.backup')
     if len(sys.argv) > 2:
+        unit = sys.argv[2]
         file = sys.argv[1]
-        s_type = sys.argv[2]
+        s_type = sys.argv[3]
+        unit = int(unit)
     else:
         file = 'data/result/onebestitem/'
         s_type = 'Max'
+        unit = 20
     pa = parameters_RCPSP.Parameters()
     pa.s_type = s_type
+    pa.n_unit = unit
     fp = open(file+'result_'+s_type+'.txt', 'w')
     env = environment.Env(pa)
 
@@ -133,7 +137,7 @@ if __name__ == '__main__':
     for i in range(0, 3001, 50):
         print str(i) + '\t',
         fp.write(str(i) + '\t')
-        ttp.reset(pa, env, learner=None, pg_resume=file + 'qs5_hsize20_' + str(i) + '.pkl')
+        ttp.reset(pa, env, learner=None, pg_resume=file + 'qs5_hsize' + unit + '_' + str(i) + '.pkl')
         ttp.start()
     ###################################
     fp.close()

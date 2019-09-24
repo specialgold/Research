@@ -306,17 +306,23 @@ def main():
     import sys
     import parameters_RCPSP
 
-    if len(sys.argv) > 2:
-        filename = sys.argv[1]+'qs5_hsize20'
-        s_type = sys.argv[2]
+    if len(sys.argv) > 3:
+        unit = sys.argv[2]
+        filename = sys.argv[1] + 'qs5_hsize' + unit
+        s_type = sys.argv[3]
+        unit = int(unit)
+
     else:
         filename = 'data/result/oneRandomItem/qs5_hsize20'
         s_type = 'Max'
+        unit = 20
+
     # info = fp.parser('data/raw/j102_4.mm.backup')
     pa = parameters_RCPSP.Parameters()
 
     pa.simu_len = 100  # 1000
     pa.num_ex = 10  # 100
+    pa.n_unit = unit
     # pa.num_queue = 5
     # pa.num_nw = 5
     pa.num_seq_per_batch = 20

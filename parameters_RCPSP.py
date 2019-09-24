@@ -8,16 +8,17 @@ import random
 class Parameters:
     def __init__(self):
         self.path = 'data/30/'
-        self.seq = 0
+        self.tr_seq = 0
+        self.te_seq = 0
+        self.train = fp.get_list('data/opt30/trainlist.txt')
+        self.test = fp.get_list('data/opt30/testlist.txt')
 
-        self.dirList = os.listdir(self.path)
-        random.shuffle(self.dirList)
-        self.total = len(self.dirList)
-        self.train = self.dirList[:int(self.total*0.8)]
-        self.train_len = len(self.train)
-        self.test = self.dirList[int(self.total*0.8):]
-        a = np.random.choice(self.train, 1)
-        self.file = a[0]
+        # self.train = self.dirList[:int(self.total*0.8)]
+        #
+        # self.test = self.dirList[int(self.total*0.8):]
+        #
+        # a = np.random.choice(self.train, 1)
+        self.file = self.train[0]
         self.path = self.path + self.file
         self.s_type = 'Max'
 
@@ -84,7 +85,7 @@ class Parameters:
         # self.discount = 0.9         # discount factor
         # distribution for new job arrival
         # self.dist = job_distribution.Dist(self.num_res, self.max_job_size, self.max_job_len)
-
+        self.n_unit = 20
         # graphical representation
         # assert self.backlog_size % self.time_horizon == 0  # such that it can be converted into an image
         # self.backlog_width = int(math.ceil(self.backlog_size / float(self.time_horizon)))
@@ -127,19 +128,19 @@ class Parameters:
         self.path = 'data/30/'
         # self.path = '../data/RCPSP/train/'
 
-
         if type == 'train':
             # a = np.random.choice(self.train, 1)
             # file = a[0]
-            self.file = self.train[self.seq % self.train_len]
-            self.seq += 1
+            if self.tr_seq == len(self.train):
+                self.tr_seq = 0
+            self.file = self.train[self.tr_seq]
+            self.tr_seq += 1
         else:
-            if len(self.test) == 0:
-                # self.test = self.dirList[:]
-                self.test = self.dirList[int(self.total * 0.8):]
+            if self.te_seq == len(self.test):
+                self.te_seq = 0
                 return False
-            self.file = self.test[0]
-            del self.test[0]
+            self.file = self.test[self.te_seq]
+            self.te_seq += 1
 
         self.path = 'data/30/' + self.file
         info = fp.parser(self.path)
