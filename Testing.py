@@ -125,7 +125,7 @@ if __name__ == '__main__':
     pa = parameters_RCPSP.Parameters()
     pa.s_type = s_type
     pa.n_unit = unit
-    fp = open(file+'result_'+s_type+'.txt', 'w')
+    fp = open(file+'result_'+'u'+str(unit)+'_'+s_type+'.txt', 'w')
     env = environment.Env(pa)
 
     ###################################
@@ -134,10 +134,10 @@ if __name__ == '__main__':
     ttp = TestingTrainParameter(pa, env)
     ttp.setTest(True)
     ttp.setFP(fp)
-    for i in range(0, 3001, 50):
+    for i in range(0, 2001, 50):
         print str(i) + '\t',
         fp.write(str(i) + '\t')
-        ttp.reset(pa, env, learner=None, pg_resume=file + 'qs5_hsize' + unit + '_' + str(i) + '.pkl')
+        ttp.reset(pa, env, learner=None, pg_resume=file + 'qs5_hsize' + str(unit) + '_' + str(i) + '.pkl')
         ttp.start()
     ###################################
     fp.close()

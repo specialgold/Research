@@ -106,7 +106,7 @@ class Env:
                     self.eligible[j] = tmp
                     self.eligible_cnt += 1
                     self.backlog.remove(tmp)
-                    # break
+                    break
 
     def findRandomEligible(self):
         for j in range(self.pa.num_queue):
